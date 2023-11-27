@@ -1,0 +1,17 @@
+[project]
+name = "alma-service"
+version = "0.0.1"
+dependencies = [
+    "flask",
+    "python-dotenv",
+    "requests",
+]
+[project.optional-dependencies]
+test = [
+    "debugpy",
+    "pycodestyle",
+    "pytest",
+    "pytest-cov",
+]
+[project.scripts]
+alma-service = "alma.server:run"
