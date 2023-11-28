@@ -67,3 +67,20 @@ json_formatter = JsonFormatter({"level": "levelname",
                                     "threadName": "threadName",
                                     "threadID": "thread",
                                     "timestamp": "asctime"})
+
+logger = logging.getLogger(__name__)
+logHandler = logging.StreamHandler()
+logHandler.setFormatter(json_formatter)
+logger.addHandler(logHandler)
+
+schema = {
+    "type" : "object",
+    "properties" : {
+        "bibnums": {
+            "type" : "array",
+            "items" : {
+                "type" : "string"
+            }
+        }
+    }
+}

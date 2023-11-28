@@ -1,13 +1,12 @@
-import logging
+from os import environ
 
 import click
 from dotenv import load_dotenv
 from waitress import serve
 
 from alma import __version__
+from alma.utils import logger
 from alma.web import app
-
-logger = logging.getLogger(__name__)
 
 
 @click.command()
@@ -21,7 +20,10 @@ logger = logging.getLogger(__name__)
 @click.help_option('--help', '-h')
 def run(listen):
     load_dotenv()
-    server_identity = f'textbooks-service/{__version__}'
+    if 'API_KEY' not in environ:
+        raise RuntimeError('API_KEY not set in environment')
+
+    server_identity = f'alma-service/{__version__}'
     logger.info(f'Starting {server_identity}')
     try:
         serve(

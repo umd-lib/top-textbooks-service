@@ -1,10 +1,9 @@
-from flask import Flask
-from flask.logging import default_handler
+from flask import Flask, abort, request
+from jsonschema import ValidationError, validate
 
 from alma import __version__
-from alma.utils import json_formatter
-
-default_handler.setFormatter(json_formatter)
+from alma.errors import blueprint
+from alma.utils import logger, schema
 
 
 def app() -> Flask:
@@ -16,7 +15,8 @@ def _create_app() -> Flask:
         import_name=__name__,
         static_url_path='/oai/static',
     )
-    _app.logger.info(f'Starting textbooks-service/{__version__}')
+    _app.register_blueprint(blueprint)
+    logger.info(f'Starting alma-service/{__version__}')
 
     @_app.route('/')
     def root():
@@ -36,6 +36,16 @@ def _create_app() -> Flask:
 
     @_app.route('/textbooks', methods=['GET', 'POST'])
     def textbooks():
+        data = request.get_json() if request.is_json else abort(400, "Request was not JSON")
+
+        try:
+            validate(schema, data)
+        except ValidationError as e:
+            logger.error(str(e))
+            abort(400, "JSON received is not valid.")
+
+
+
         return "This is the endpoint for the textbooks"
 
     @_app.route('/equipment', methods=['GET', 'POST'])
