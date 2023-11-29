@@ -15,4 +15,5 @@ referencing==0.31.0
 requests==2.31.0
 rpds-py==0.13.1
 urllib3==2.1.0
+waitress==2.1.2
 Werkzeug==3.0.1
