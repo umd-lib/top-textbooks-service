@@ -1,13 +1,13 @@
 
 from flask import Blueprint, jsonify
 
-from alma.utils import logger
+from textbooks.utils import logger
 
 blueprint = Blueprint('error_handlers', __name__)
 
 
 @blueprint.app_errorhandler(400)
-def custom_400(e):
+def _bad_request(e):
     logger.error(e.description)
 
     response = jsonify({'status': 400,
@@ -17,7 +17,7 @@ def custom_400(e):
     return response
 
 @blueprint.app_errorhandler(404)
-def custom_404(e):
+def _not_found(e):
     logger.error(e.description)
 
     response = jsonify({'status': 404,
@@ -27,7 +27,7 @@ def custom_404(e):
     return response
 
 @blueprint.app_errorhandler(429)
-def too_many_requests(e):
+def _too_many_requests(e):
     logger.error(e.description)
 
     response = jsonify({'status': 429,
@@ -37,7 +37,7 @@ def too_many_requests(e):
     return response
 
 @blueprint.app_errorhandler(500)
-def internal_server_error(e):
+def _internal_server_error(e):
     logger.error(e.description)
 
     response = jsonify({'status': 500,
@@ -47,7 +47,7 @@ def internal_server_error(e):
     return response
 
 @blueprint.app_errorhandler(502)
-def bad_gateway(e):
+def _bad_gateway(e):
     logger.error(e.description)
 
     response = jsonify({'status': 502,
@@ -57,7 +57,7 @@ def bad_gateway(e):
     return response
 
 @blueprint.app_errorhandler(504)
-def gateway_timed_out(e):
+def _gateway_timed_out(e):
     logger.error(e.description)
 
     response = jsonify({'status': 504,

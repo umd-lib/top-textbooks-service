@@ -1,5 +1,5 @@
 [project]
-name = "alma-service"
+name = "top-textbooks-service"
 version = "0.0.1"
 dependencies = [
     "flask",
@@ -14,4 +14,4 @@ test = [
     "pytest-cov",
 ]
 [project.scripts]
-alma-service = "alma.server:run"
+top-texbooks-service = "textbooks.server:run"
