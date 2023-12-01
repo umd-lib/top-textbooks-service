@@ -1,7 +1,6 @@
 
+from core.utils import logger
 from flask import Blueprint, jsonify
-
-from textbooks.utils import logger
 
 blueprint = Blueprint('error_handlers', __name__)
 
