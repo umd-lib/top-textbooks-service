@@ -73,9 +73,3 @@ logHandler = logging.StreamHandler()
 logHandler.setFormatter(json_formatter)
 logger.addHandler(logHandler)
 
-textbooks_schema = {
-    "type" : "array",
-    "items" : {
-        "type" : "string"
-    }
-}

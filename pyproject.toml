@@ -14,4 +14,4 @@ test = [
     "pytest-cov",
 ]
 [project.scripts]
-top-texbooks-service = "textbooks.server:run"
+top-textbooks-service = "textbooks.server:run"
