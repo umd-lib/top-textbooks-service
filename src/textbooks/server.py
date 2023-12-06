@@ -1,12 +1,11 @@
 
 import click
-from core.utils import logger
-from core.web import app
 from dotenv import load_dotenv
 from waitress import serve
 
 from textbooks import __version__
-from textbooks.textbooks import TopTextbooksProcessor, construct_processor_endpoint
+from textbooks.core.utils import logger
+from textbooks.web import app
 
 
 @click.command()
@@ -26,9 +25,8 @@ def run(listen):
     server_identity = f'top-textbooks-service/{__version__}'
     logger.info(f'Starting {server_identity}')
     try:
-        processor = TopTextbooksProcessor()
         serve(
-            app=app(processor, construct_processor_endpoint(processor)),
+            app=app(),
             listen=listen,
             ident=server_identity,
         )

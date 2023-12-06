@@ -1,18 +1,17 @@
 import json
 
 import pytest
-from core.request_handler import (
+from textbooks.core.exceptions import (
   BadGatewayError,
   GatewayTimeoutError,
   TooManyRequestsError,
 )
-from core.web import _create_app
-from textbooks.textbooks import TopTextbooksProcessor, construct_processor_endpoint
+from textbooks.web import _create_app
 
 
 @pytest.fixture
-def app(processor = TopTextbooksProcessor()):
-  app = _create_app(processor, construct_processor_endpoint(processor))
+def app():
+  app = _create_app(server=None)
 
   yield app
 
@@ -56,9 +55,8 @@ class MockAlmaServerGateway:
     self.responseFunction()
 
 def test_server_returns_429_too_many_requests_error():
-    testGateway = MockAlmaServerGateway(lambda: raise_(TooManyRequestsError()))
-    processor = TopTextbooksProcessor(testGateway)
-    app = _create_app(processor, construct_processor_endpoint(processor))
+    testGateway = MockAlmaServerGateway(lambda: raise_(TooManyRequestsError("Too Many Requests")))
+    app = _create_app(testGateway)
     client = app.test_client()
     response = client.post(
         "/textbooks",
@@ -67,9 +65,8 @@ def test_server_returns_429_too_many_requests_error():
     assert response.status_code == 429
 
 def test_server_returns_502_bad_gateway_error():
-    testGateway = MockAlmaServerGateway(lambda: raise_(BadGatewayError()))
-    processor = TopTextbooksProcessor(testGateway)
-    app = _create_app(processor, construct_processor_endpoint(processor))
+    testGateway = MockAlmaServerGateway(lambda: raise_(BadGatewayError("Bad Gateway")))
+    app = _create_app(testGateway)
     client = app.test_client()
     response = client.post(
         "/textbooks",
@@ -78,9 +75,8 @@ def test_server_returns_502_bad_gateway_error():
     assert response.status_code == 502
 
 def test_server_returns_504_gateway_timeout_error():
-    testGateway = MockAlmaServerGateway(lambda: raise_(GatewayTimeoutError()))
-    processor = TopTextbooksProcessor(testGateway)
-    app = _create_app(processor, construct_processor_endpoint(processor))
+    testGateway = MockAlmaServerGateway(lambda: raise_(GatewayTimeoutError("Gateway Timed Out")))
+    app = _create_app(testGateway)
     client = app.test_client()
     response = client.post(
         "/textbooks",
