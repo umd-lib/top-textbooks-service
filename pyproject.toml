@@ -9,9 +9,18 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "debugpy",
-    "pycodestyle",
     "pytest",
     "pytest-cov",
+    "ruff"
 ]
 [project.scripts]
 top-textbooks-service = "textbooks.server:run"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    'E', # pycodestyle errors
+    'W' # pycodestyle warnings
+]

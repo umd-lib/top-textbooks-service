@@ -12,7 +12,7 @@
     // "forwardPorts": [],
 
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "pip install -r requirements.test.txt -e .",
+    "postCreateCommand": "pip install -r requirements.test.txt -e .[test]",
 
     // Configure tool-specific properties.
     "customizations": {
@@ -21,7 +21,8 @@
           "ms-python.python",
           "ms-python.vscode-pylance",
           "eamodio.gitlens",
-          "charliermarsh.ruff"
+          "charliermarsh.ruff",
+          "humao.rest-client"
         ],
         "settings": {
             "python.testing.pytestArgs": [
@@ -40,7 +41,23 @@
             },
             "editor.rulers": [
                 80, 120
-            ]
+            ],
+            "terminal.integrated.defaultProfile.linux": "zsh",
+            "terminal.integrated.profiles.linux": {
+              "bash": {
+                "path": "bash",
+                "args": [
+                  "-l"
+                ],
+                "icon": "terminal-bash"
+              },
+              "zsh": {
+                "path": "zsh",
+                "args": [
+                  "-l"
+                ]
+              }
+            }
         }
       }
     }
