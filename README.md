@@ -78,7 +78,7 @@ Upon opening this codebase in VSCode:
 
 - The pip install command is run as part of the Docker container setup, and various VS Code extensions are automatically added.
 
-- To run PATSy commands and Python tools such as "pytest", open a terminal in VS Code (select "Terminal | New Terminal") from the menubar.
+- To run the microservice and Python tools such as "pytest", open a terminal in VS Code (select "Terminal | New Terminal") from the menubar.
 
 ### Deploying using Docker
 
