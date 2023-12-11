@@ -1,11 +1,22 @@
 
+import logging
+from os import environ
+
 import click
 from dotenv import load_dotenv
 from waitress import serve
 
 from textbooks import __version__
-from textbooks.core.utils import logger
+from textbooks.core.utils import json_formatter
 from textbooks.web import app
+
+logger = logging.getLogger(__name__)
+logHandler = logging.StreamHandler()
+logHandler.setFormatter(json_formatter)
+logger.addHandler(logHandler)
+
+debug = environ.get("FLASK_DEBUG", default=False)
+logger.setLevel(logging.DEBUG if debug else logging.INFO)
 
 
 @click.command()
@@ -15,18 +26,23 @@ from textbooks.web import app
     help='Address and port to listen on. Default is "0.0.0.0:5000".',
     metavar='[ADDRESS]:PORT',
 )
+@click.option(
+    '--alma_config', 'alma_config_file',
+    type=click.File(),
+    help='Configuration file for the Alma API.',
+)
 @click.version_option(__version__, '--version', '-V')
 @click.help_option('--help', '-h')
-def run(listen):
+def run(listen, alma_config_file):
     load_dotenv()
-    # if 'API_KEY' not in environ:
-        # raise RuntimeError('API_KEY not set in environment')
+    if 'API_KEY' not in environ:
+        raise RuntimeError('API_KEY not set in environment')
 
     server_identity = f'top-textbooks-service/{__version__}'
     logger.info(f'Starting {server_identity}')
     try:
         serve(
-            app=app(),
+            app=app(config=alma_config_file),
             listen=listen,
             ident=server_identity,
         )
