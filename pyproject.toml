@@ -2,13 +2,20 @@
 name = "top-textbooks-service"
 version = "0.0.1"
 dependencies = [
+    "beautifulsoup4",
     "flask",
+    "jsonschema",
+    "lxml",
     "python-dotenv",
+    "python-json-logger",
+    "PyYAML",
     "requests",
+    "waitress",
 ]
 [project.optional-dependencies]
 test = [
     "debugpy",
+    "pipdeptree",
     "pytest",
     "pytest-cov",
     "ruff"
