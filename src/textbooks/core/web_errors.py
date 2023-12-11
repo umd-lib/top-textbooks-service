@@ -1,13 +1,23 @@
+import logging
+from os import environ
 
 from flask import Blueprint, jsonify
-from textbooks.core.utils import logger
+from textbooks.core.utils import json_formatter
+
+logger = logging.getLogger(__name__)
+logHandler = logging.StreamHandler()
+logHandler.setFormatter(json_formatter)
+logger.addHandler(logHandler)
+
+debug = environ.get("FLASK_DEBUG", default=False)
+logger.setLevel(logging.DEBUG if debug else logging.INFO)
 
 blueprint = Blueprint('error_handlers', __name__)
 
 
 @blueprint.app_errorhandler(400)
 def _bad_request(e):
-    logger.error(e.description)
+    logger.warning(e.description)
 
     response = jsonify({'status': 400,
                         'error': 'Bad Request',
@@ -17,7 +27,7 @@ def _bad_request(e):
 
 @blueprint.app_errorhandler(404)
 def _not_found(e):
-    logger.error(e.description)
+    logger.warning(e.description)
 
     response = jsonify({'status': 404,
                         'error': 'Not Found',
@@ -27,7 +37,7 @@ def _not_found(e):
 
 @blueprint.app_errorhandler(429)
 def _too_many_requests(e):
-    logger.error(e.description)
+    logger.warning(e.description)
 
     response = jsonify({'status': 429,
                         'error': 'Too Many Requests',
@@ -37,7 +47,7 @@ def _too_many_requests(e):
 
 @blueprint.app_errorhandler(500)
 def _internal_server_error(e):
-    logger.error(e.description)
+    logger.warning(e.description)
 
     response = jsonify({'status': 500,
                         'error': 'Internal Server Error',
@@ -47,7 +57,7 @@ def _internal_server_error(e):
 
 @blueprint.app_errorhandler(502)
 def _bad_gateway(e):
-    logger.error(e.description)
+    logger.warning(e.description)
 
     response = jsonify({'status': 502,
                         'error': 'Bad Gateway',
@@ -57,7 +67,7 @@ def _bad_gateway(e):
 
 @blueprint.app_errorhandler(504)
 def _gateway_timed_out(e):
-    logger.error(e.description)
+    logger.warning(e.description)
 
     response = jsonify({'status': 504,
                         'error': 'Gateway Timed Out',
