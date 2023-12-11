@@ -33,7 +33,7 @@ FLASK_DEBUG=1
 To run the application in debug mode, with hot code reloading:
 
 ```bash
-flask --app "textbooks.web:app()" run
+flask --app "textbooks.web:app(config='alma_config.yaml')" run
 ```
 
 The microservice will be available at <http://localhost:5000/>,
@@ -43,7 +43,7 @@ To change the port, add `-p {port number}` to the `flask` command:
 
 ```bash
 # for example, to run on port 8000
-flask --app "textbooks.web:app()" run -p 8000
+flask --app "textbooks.web:app(config='alma_config.yaml')" run -p 8000
 ```
 
 ### Testing
