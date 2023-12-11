@@ -1,0 +1,2 @@
+host: "https://api-na.hosted.exlibrisgroup.com"
+endpoint: "/almaws/v1/bibs"
