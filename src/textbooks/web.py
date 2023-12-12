@@ -2,13 +2,13 @@ import logging
 from os import environ
 from typing import Any, Optional, Text, TextIO
 
+from core.handling import AlmaServerGateway, TopTextbooksProcessor
+from core.utils import json_formatter
+from core.web_errors import blueprint
 from flask import Flask, abort, request
 from yaml import safe_load
 
 from textbooks import __version__
-from textbooks.core.handling import AlmaServerGateway, TopTextbooksProcessor
-from textbooks.core.utils import json_formatter
-from textbooks.core.web_errors import blueprint
 
 logger = logging.getLogger(__name__)
 logHandler = logging.StreamHandler()

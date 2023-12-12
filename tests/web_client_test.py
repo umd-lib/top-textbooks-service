@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from textbooks.core.exceptions import (
+from core.exceptions import (
     BadGatewayError,
     GatewayTimeoutError,
     TooManyRequestsError,

@@ -2,7 +2,8 @@ import logging
 from os import environ
 
 from flask import Blueprint, jsonify
-from textbooks.core.utils import json_formatter
+
+from core.utils import json_formatter
 
 logger = logging.getLogger(__name__)
 logHandler = logging.StreamHandler()

@@ -3,11 +3,11 @@ import logging
 from os import environ
 
 import click
+from core.utils import json_formatter
 from dotenv import load_dotenv
 from waitress import serve
 
 from textbooks import __version__
-from textbooks.core.utils import json_formatter
 from textbooks.web import app
 
 logger = logging.getLogger(__name__)

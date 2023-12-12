@@ -1,4 +1,4 @@
-from textbooks.core.handling import TopTextbooksProcessor
+from core.handling import TopTextbooksProcessor
 
 
 def test_unique_mms_ids():

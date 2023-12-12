@@ -5,7 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 from flask import abort
 from jsonschema import ValidationError, validate
-from textbooks.core.utils import json_formatter
+
+from core.utils import json_formatter
 
 logger = logging.getLogger(__name__)
 logHandler = logging.StreamHandler()
