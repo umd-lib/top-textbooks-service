@@ -2,7 +2,7 @@ import logging
 from os import environ
 from typing import Any, Optional, Text, TextIO
 
-from core.handling import AlmaServerGateway
+from core.gateway import AlmaServerGateway
 from core.utils import create_logger
 from core.web_errors import blueprint
 from flask import Flask, abort, request
