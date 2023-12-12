@@ -66,7 +66,7 @@ pytest --cov src --cov-report term-missing
 This project also uses [pycodestyle] as a style checker and linter:
 
 ```zsh
-pycodestyle src
+pycodestyle .
 ```
 
 Configuration of pycodestyle is found in the [tox.ini](tox.ini) file.
