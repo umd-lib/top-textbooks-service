@@ -26,8 +26,14 @@ top-textbooks-service = "textbooks.server:run"
 [tool.ruff]
 line-length = 120
 
+[tool.ruff.format]
+quote-style = "single"
+
 [tool.ruff.lint]
-select = [
-    'E', # pycodestyle errors
-    'W' # pycodestyle warnings
-]
+# preview is required to enable many pycodestyle rules see
+# https://docs.astral.sh/ruff/rules/
+preview = true
+
+# Enable pycodestyle errors and warnings
+select = ["E", "W"]
+
