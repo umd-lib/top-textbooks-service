@@ -23,7 +23,7 @@ class AlmaServerGateway:
         if 'host' not in config or 'endpoint' not in config:
             raise RuntimeError('Gateway configuration not valid')
 
-        self.api_key = environ.get('API_KEY', '')
+        self.api_key = environ.get('ALMA_API_KEY', '')
 
     def queryServer(self, mms_ids):
         """

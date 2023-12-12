@@ -35,8 +35,8 @@ logger.setLevel(logging.DEBUG if debug else logging.INFO)
 @click.help_option('--help', '-h')
 def run(listen, alma_config_file):
     load_dotenv()
-    if 'API_KEY' not in environ:
-        raise RuntimeError('API_KEY not set in environment')
+    if 'ALMA_API_KEY' not in environ:
+        raise RuntimeError('ALMA_API_KEY not set in environment')
 
     server_identity = f'top-textbooks-service/{__version__}'
     logger.info(f'Starting {server_identity}')
