@@ -3,17 +3,14 @@ from os import environ
 from typing import Any, Optional, Text, TextIO
 
 from core.handling import AlmaServerGateway, TopTextbooksProcessor
-from core.utils import json_formatter
+from core.utils import create_logger
 from core.web_errors import blueprint
 from flask import Flask, abort, request
 from yaml import safe_load
 
 from textbooks import __version__
 
-logger = logging.getLogger(__name__)
-logHandler = logging.StreamHandler()
-logHandler.setFormatter(json_formatter)
-logger.addHandler(logHandler)
+logger = create_logger(__name__)
 
 debug = environ.get('FLASK_DEBUG', default=False)
 logger.setLevel(logging.DEBUG if debug else logging.INFO)

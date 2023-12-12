@@ -1,4 +1,17 @@
+import logging
+
 from pythonjsonlogger import jsonlogger
+
+
+def create_logger(name):
+    """
+    Returns a logger with the given name
+    """
+    logger = logging.getLogger(name)
+    logHandler = logging.StreamHandler()
+    logHandler.setFormatter(json_formatter)
+    logger.addHandler(logHandler)
+    return logger
 
 
 class CustomJsonFormatter(jsonlogger.JsonFormatter):

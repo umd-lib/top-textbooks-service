@@ -3,17 +3,14 @@ import logging
 from os import environ
 
 import click
-from core.utils import json_formatter
+from core.utils import create_logger
 from dotenv import load_dotenv
 from waitress import serve
 
 from textbooks import __version__
 from textbooks.web import app
 
-logger = logging.getLogger(__name__)
-logHandler = logging.StreamHandler()
-logHandler.setFormatter(json_formatter)
-logger.addHandler(logHandler)
+logger = create_logger(__name__)
 
 debug = environ.get("FLASK_DEBUG", default=False)
 logger.setLevel(logging.DEBUG if debug else logging.INFO)

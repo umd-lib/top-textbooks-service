@@ -3,12 +3,9 @@ from os import environ
 
 from flask import Blueprint, jsonify
 
-from core.utils import json_formatter
+from core.utils import create_logger
 
-logger = logging.getLogger(__name__)
-logHandler = logging.StreamHandler()
-logHandler.setFormatter(json_formatter)
-logger.addHandler(logHandler)
+logger = create_logger(__name__)
 
 debug = environ.get('FLASK_DEBUG', default=False)
 logger.setLevel(logging.DEBUG if debug else logging.INFO)
