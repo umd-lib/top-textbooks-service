@@ -1,0 +1,5 @@
+# The API key for accessing the Alma API
+ALMA_API_KEY=
+
+# Uncomment to run the application in debug mode
+# FLASK_DEBUG=1

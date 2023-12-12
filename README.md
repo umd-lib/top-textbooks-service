@@ -24,10 +24,22 @@ pip install -r requirements.test.txt -e .
 
 ### Configuration
 
-Create a `.env` file with the following contents:
+1) Copy the "env-template" file to ".env"
 
 ```zsh
-FLASK_DEBUG=1
+cp env-template .env
+```
+
+2) Edit the file
+
+```zsh
+vi .env
+```
+
+and make the following changes:
+
+* Enter a value for the "ALMA_API_KEY":
+* (Optional) Uncomment the `FLASK_DEBUG=1` to run the application in debug mode
 ```
 
 ### Running
@@ -111,16 +123,17 @@ docker pull docker.lib.umd.edu/top-textbooks-service:latest
 Run the container:
 
 ```zsh
-docker run -d -p 5000:5000 docker.lib.umd.edu/top-textbooks-service:latest
+export ALMA_API_KEY=<Alma API Key>
+docker run --publish 5000:5000 --env ALMA_API_KEY=$ALMA_API_KEY docker.lib.umd.edu/top-textbooks-service:latest --alma_config=alma_config.yaml
 ```
 
 If you created a `.env` file (see [Configuration](#configuration)), you
 can run the Docker image using that file.
 
 ```zsh
-docker run -d -p 5000:5000 \
+docker run -p 5000:5000 \
     --env-file .env \
-    docker.lib.umd.edu/top-textbooks-service:latest
+    docker.lib.umd.edu/top-textbooks-service:latest --alma_config=alma_config.yaml
 ```
 
 [pytest]: https://docs.pytest.org/en/7.3.x/
