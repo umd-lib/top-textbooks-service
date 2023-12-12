@@ -15,7 +15,7 @@ logHandler = logging.StreamHandler()
 logHandler.setFormatter(json_formatter)
 logger.addHandler(logHandler)
 
-debug = environ.get("FLASK_DEBUG", default=False)
+debug = environ.get('FLASK_DEBUG', default=False)
 logger.setLevel(logging.DEBUG if debug else logging.INFO)
 
 
@@ -32,7 +32,6 @@ def get_config(config_source: Optional[str | TextIO] = None) -> dict[str, Any]:
 
 
 def app(config: Optional[str | TextIO] = None) -> Flask:
-
     server = AlmaServerGateway(config=get_config(config))
     return _create_app(server)
 
@@ -55,10 +54,10 @@ def _create_app(server) -> Flask:
         </ul>
         """
 
-    @_app.route('/textbooks', methods=['GET', 'POST']) # type: ignore
+    @_app.route('/textbooks', methods=['GET', 'POST'])  # type: ignore
     def textbooks():
         if not request.is_json:
-            abort(400, "Request was not JSON")
+            abort(400, 'Request was not JSON')
 
         requestData = request.get_json()
         logger.info(f'{requestData=}')

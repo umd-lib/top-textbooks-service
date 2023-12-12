@@ -14,11 +14,16 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
             log_record[new_field_name] = log_record[old_field_name]
             del log_record[old_field_name]
 
-reserved_attrs = ['taskName', 'args', 'levelno', 'pathname', 'name', 'msg', 'module', 'exc_info', 'exc_text',
-                  'stack_info', 'created', 'relativeCreated', 'msecs', 'thread', 'threadName', 'processName', 'process']
 
-json_formatter = CustomJsonFormatter(json_indent=4,
-                                     timestamp=True,
-                                     reserved_attrs=reserved_attrs,
-                                     rename_fields = { "levelname" : "level" },
-                                    )
+reserved_attrs = [
+    'taskName', 'args', 'levelno', 'pathname', 'name', 'msg', 'module',
+    'exc_info', 'exc_text', 'stack_info', 'created', 'relativeCreated', 'msecs',
+    'thread', 'threadName', 'processName', 'process',
+]
+
+json_formatter = CustomJsonFormatter(
+    json_indent=4,
+    timestamp=True,
+    reserved_attrs=reserved_attrs,
+    rename_fields={'levelname': 'level'},
+)
