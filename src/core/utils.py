@@ -48,16 +48,21 @@ class RedactingFilter(logging.Filter):
     def redact(self, msg):
         msg = isinstance(msg, str) and msg or str(msg)
         for pattern in self._patterns:
-            msg = msg.replace(pattern, "'apikey': [REDACTED]")
+            msg = msg.replace(pattern, "[REDACTED]")
         return msg
 
 
 load_dotenv()
 # Determine if DEBUG logging should be enabled
 debug = environ.get("FLASK_DEBUG", default=False)
+
 # Retrieve API key for redaction
-api_key = environ.get('ALMA_API_KEY', '')
-redacting_filter = RedactingFilter([api_key])
+log_redacting_filter = None
+
+log_redaction_key = environ.get('LOG_REDACTION_KEY', None)
+if log_redaction_key:
+    log_redaction_value = environ.get(log_redaction_key)
+    log_redacting_filter = RedactingFilter([log_redaction_value])
 
 reserved_attrs = [
     'taskName', 'args', 'levelno', 'pathname', 'name', 'msg', 'module',
@@ -81,6 +86,7 @@ def create_logger(name):
     logHandler = logging.StreamHandler()
     logHandler.setFormatter(json_formatter)
     logger.addHandler(logHandler)
-    logHandler.addFilter(redacting_filter)
+    if log_redacting_filter:
+        logHandler.addFilter(log_redacting_filter)
     logger.setLevel(logging.DEBUG if debug else logging.INFO)
     return logger

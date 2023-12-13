@@ -3,3 +3,7 @@ ALMA_API_KEY=
 
 # Uncomment to run the application in debug mode
 # FLASK_DEBUG=1
+
+# Logging redaction key
+# The environment variable key to redact from logs
+LOG_REDACTION_KEY=ALMA_API_KEY
