@@ -2,14 +2,13 @@ import logging
 from os import environ
 from typing import Any, Optional, Text, TextIO
 
-from core.gateway import AlmaServerGateway
 from core.utils import create_logger
 from core.web_errors import blueprint
 from flask import Flask, abort, request
 from yaml import safe_load
 
 from textbooks import __version__
-from textbooks.processor import TopTextbooksProcessor
+from textbooks.processor import AlmaServerGateway, TopTextbooksProcessor
 
 logger = create_logger(__name__)
 

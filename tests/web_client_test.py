@@ -51,7 +51,7 @@ class MockAlmaServerGateway:
     def __init__(self, responseFunction):
         self.responseFunction = responseFunction
 
-    def queryServer(self, result_data):
+    def retrieveBibs(self, mms_ids):
         self.responseFunction()
 
 

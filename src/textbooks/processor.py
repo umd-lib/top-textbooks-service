@@ -1,4 +1,7 @@
+from os import environ
+
 from bs4 import BeautifulSoup
+from core.gateway import HttpGateway
 from core.utils import create_logger
 from flask import abort
 from jsonschema import ValidationError, validate
@@ -77,7 +80,7 @@ class TopTextbooksProcessor:
         mms_ids = self.unique_mms_ids(data)
 
         # Send request
-        query_content = self.server.queryServer(mms_ids)
+        query_content = self.queryServer(mms_ids)
 
         # Process the xml content
         alma_data = self.parse_xml(query_content)
@@ -87,3 +90,26 @@ class TopTextbooksProcessor:
                 logger.warning(f'{mms_id} not found in Alma.')
 
         return alma_data
+
+    def queryServer(self, mms_ids):
+        """
+        Generates parameters neceessary to query Alma Server.
+        Request content is xml, processed in :meth:`parse_xml`
+        """
+        return self.server.retrieveBibs(mms_ids)
+
+
+class AlmaServerGateway:
+    def __init__(self, config) -> None:
+        # Probably a yaml file
+        self.config = config
+        if 'host' not in config or 'endpoint' not in config:
+            raise RuntimeError('Gateway configuration not valid')
+
+        self.api_key = environ.get('ALMA_API_KEY', '')
+
+    def retrieveBibs(self, mms_ids):
+        params = {'mms_id': ','.join(mms_ids), 'view': 'full', 'expand': 'p_avail', 'apikey': self.api_key}
+
+        url = self.config['host'] + self.config['endpoint']
+        return HttpGateway.get(url, params)
