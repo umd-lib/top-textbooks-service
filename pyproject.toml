@@ -18,6 +18,7 @@ test = [
     "pipdeptree",
     "pytest",
     "pytest-cov",
+    "requests-mock",
     "ruff"
 ]
 [project.scripts]

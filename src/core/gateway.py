@@ -16,12 +16,6 @@ class HttpGateway:
         r = requests.get(url, params=params)
         request_response_time = f"{(perf_counter() - request_start_time):.4f} seconds"
 
-        if r.status_code == 400:
-            abort(r.status_code, f"Received 400 from '{url}' in {request_response_time}")
-
-        if r.status_code == 500:
-            abort(r.status_code, f"Received 500 from '{url}' in {request_response_time}")
-
         if not r.ok:
             logger.warning(f"Received unexpected {r.status_code} from '{url}' in {request_response_time}")
             abort(r.status_code, r.reason)
