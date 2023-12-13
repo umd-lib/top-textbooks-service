@@ -2,7 +2,7 @@
 from os import environ
 
 import click
-from core.utils import create_logger
+from core.logging import create_logger
 from dotenv import load_dotenv
 from waitress import serve
 

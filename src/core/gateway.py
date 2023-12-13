@@ -1,7 +1,7 @@
 import requests
 from flask import abort
 
-from core.utils import create_logger
+from core.logging import create_logger
 
 logger = create_logger(__name__)
 

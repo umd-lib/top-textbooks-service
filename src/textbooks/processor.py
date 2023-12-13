@@ -2,7 +2,7 @@ from os import environ
 
 from bs4 import BeautifulSoup
 from core.gateway import HttpGateway
-from core.utils import create_logger
+from core.logging import create_logger
 from flask import abort
 from jsonschema import ValidationError, validate
 

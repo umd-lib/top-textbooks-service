@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 
-from core.utils import create_logger
+from core.logging import create_logger
 
 logger = create_logger(__name__)
 
