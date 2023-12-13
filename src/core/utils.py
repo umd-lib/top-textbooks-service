@@ -1,6 +1,12 @@
 import logging
+from os import environ
 
+from dotenv import load_dotenv
 from pythonjsonlogger import jsonlogger
+
+# Determine if DEBUG logging should be enabled
+load_dotenv()
+debug = environ.get("FLASK_DEBUG", default=False)
 
 
 def create_logger(name):
@@ -11,6 +17,7 @@ def create_logger(name):
     logHandler = logging.StreamHandler()
     logHandler.setFormatter(json_formatter)
     logger.addHandler(logHandler)
+    logger.setLevel(logging.DEBUG if debug else logging.INFO)
     return logger
 
 

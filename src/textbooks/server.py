@@ -1,5 +1,4 @@
 
-import logging
 from os import environ
 
 import click
@@ -11,9 +10,6 @@ from textbooks import __version__
 from textbooks.web import app
 
 logger = create_logger(__name__)
-
-debug = environ.get("FLASK_DEBUG", default=False)
-logger.setLevel(logging.DEBUG if debug else logging.INFO)
 
 
 @click.command()

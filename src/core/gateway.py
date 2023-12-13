@@ -1,15 +1,9 @@
-import logging
-from os import environ
-
 import requests
 from flask import abort
 
 from core.utils import create_logger
 
 logger = create_logger(__name__)
-
-debug = environ.get('FLASK_DEBUG', default=False)
-logger.setLevel(logging.DEBUG if debug else logging.INFO)
 
 
 class HttpGateway:

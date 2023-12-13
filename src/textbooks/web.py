@@ -1,5 +1,3 @@
-import logging
-from os import environ
 from typing import Any, Optional, Text, TextIO
 
 from core.utils import create_logger
@@ -11,9 +9,6 @@ from textbooks import __version__
 from textbooks.processor import AlmaServerGateway, TopTextbooksProcessor
 
 logger = create_logger(__name__)
-
-debug = environ.get('FLASK_DEBUG', default=False)
-logger.setLevel(logging.DEBUG if debug else logging.INFO)
 
 
 def get_config(config_source: Optional[str | TextIO] = None) -> dict[str, Any]:
