@@ -22,7 +22,8 @@
           "ms-python.vscode-pylance",
           "eamodio.gitlens",
           "charliermarsh.ruff",
-          "humao.rest-client"
+          "humao.rest-client",
+          "mikeburgh.xml-format"
         ],
         "settings": {
             "python.testing.pytestArgs": [
