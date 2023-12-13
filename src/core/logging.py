@@ -71,7 +71,6 @@ reserved_attrs = [
 ]
 
 json_formatter = CustomJsonFormatter(
-    json_indent=4,
     timestamp=True,
     reserved_attrs=reserved_attrs,
     rename_fields={'levelname': 'level'},
