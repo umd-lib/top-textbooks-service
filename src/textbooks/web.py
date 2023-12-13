@@ -46,7 +46,7 @@ def _create_app(server) -> Flask:
         </ul>
         """
 
-    @_app.route('/textbooks', methods=['GET', 'POST'])  # type: ignore
+    @_app.route('/api/textbooks', methods=['GET', 'POST'])  # type: ignore
     def textbooks():
         if not request.is_json:
             abort(400, 'Request was not JSON')
