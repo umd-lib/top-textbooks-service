@@ -1,0 +1,15 @@
+.dockerignore
+.DS_Store
+.git*
+.idea
+**/*.egg-info
+.*_cache
+
+.tox/
+
+.env
+.coverage
+.devcontainer
+.venv
+.vscode
+**/__pycache__/

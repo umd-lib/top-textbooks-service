@@ -1,22 +1,14 @@
-import logging
-from os import environ
 from typing import Any, Optional, Text, TextIO
 
+from core.logging import create_logger
+from core.web_errors import blueprint
 from flask import Flask, abort, request
 from yaml import safe_load
 
 from textbooks import __version__
-from textbooks.core.handling import AlmaServerGateway, TopTextbooksProcessor
-from textbooks.core.utils import json_formatter
-from textbooks.core.web_errors import blueprint
+from textbooks.processor import AlmaServerGateway, TopTextbooksProcessor
 
-logger = logging.getLogger(__name__)
-logHandler = logging.StreamHandler()
-logHandler.setFormatter(json_formatter)
-logger.addHandler(logHandler)
-
-debug = environ.get("FLASK_DEBUG", default=False)
-logger.setLevel(logging.DEBUG if debug else logging.INFO)
+logger = create_logger(__name__)
 
 
 def get_config(config_source: Optional[str | TextIO] = None) -> dict[str, Any]:
@@ -32,7 +24,6 @@ def get_config(config_source: Optional[str | TextIO] = None) -> dict[str, Any]:
 
 
 def app(config: Optional[str | TextIO] = None) -> Flask:
-
     server = AlmaServerGateway(config=get_config(config))
     return _create_app(server)
 
@@ -55,10 +46,10 @@ def _create_app(server) -> Flask:
         </ul>
         """
 
-    @_app.route('/textbooks', methods=['GET', 'POST']) # type: ignore
+    @_app.route('/api/textbooks', methods=['GET', 'POST'])  # type: ignore
     def textbooks():
         if not request.is_json:
-            abort(400, "Request was not JSON")
+            abort(400, 'Request was not JSON')
 
         requestData = request.get_json()
         logger.info(f'{requestData=}')
