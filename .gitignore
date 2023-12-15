@@ -164,3 +164,7 @@ cython_debug/
 
 # Ruff cache directory
 .ruff_cache
+
+# Code coverage reports
+coverage/
+reports/

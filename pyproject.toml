@@ -19,7 +19,8 @@ test = [
     "pytest",
     "pytest-cov",
     "requests-mock",
-    "ruff"
+    "ruff",
+    "pycodestyle"
 ]
 [project.scripts]
 top-textbooks-service = "textbooks.server:run"

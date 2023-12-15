@@ -41,7 +41,7 @@ class HttpGateway:
             extra={'http_status_code': response.status_code, 'request_response_time_in_secs': request_response_time}
         )
 
-    @ staticmethod
+    @staticmethod
     def get(url, params):
         logger.debug(f'{url=}, {params=}')
 
