@@ -101,11 +101,13 @@ class TopTextbooksProcessor:
 
 class AlmaServerGateway:
     def __init__(self, config) -> None:
-        # Probably a yaml file
-        self.config = config
+        if config is None:
+            raise RuntimeError('Config file not provided')
+
         if 'host' not in config or 'endpoint' not in config:
             raise RuntimeError('Gateway configuration not valid')
 
+        self.config = config
         self.api_key = environ.get('ALMA_API_KEY', '')
 
     def retrieveBibs(self, mms_ids):
