@@ -1,7 +1,6 @@
 import logging
 from os import environ
 
-from dotenv import load_dotenv
 from pythonjsonlogger import jsonlogger
 
 
@@ -52,7 +51,6 @@ class RedactingFilter(logging.Filter):
         return msg
 
 
-load_dotenv()
 # Determine if DEBUG logging should be enabled
 debug = environ.get("FLASK_DEBUG", default=False)
 
@@ -82,10 +80,27 @@ def create_logger(name):
     Returns a logger with the given name
     """
     logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
     logHandler = logging.StreamHandler()
-    logHandler.setFormatter(json_formatter)
-    logger.addHandler(logHandler)
+
     if log_redacting_filter:
         logHandler.addFilter(log_redacting_filter)
-    logger.setLevel(logging.DEBUG if debug else logging.INFO)
+
+    if not debug:
+        logHandler.setFormatter(json_formatter)
+        logger.setLevel(logging.INFO)
+
+        # Disable doubling logging in production.
+        #
+        # The root logger logs the same information as the generated ones,
+        # without the formatting.
+        #
+        # Pytest depends on capturing log information from the root logger.
+        #
+        # Since testing would be done during development, and since we would
+        # probably be debugging at the same time, setting logger.propagate to
+        # false during development seems like the least intrusive change.
+        logger.propagate = False
+
+    logger.addHandler(logHandler)
     return logger
