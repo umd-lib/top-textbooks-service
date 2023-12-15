@@ -39,7 +39,6 @@ def _create_app(server: Optional[AlmaServerGateway] = None) -> Flask:
     def root():
         return {'status': 'ok'}
 
-
     @_app.route('/ping')
     def ping():
         return {'status': 'ok'}
