@@ -12,8 +12,8 @@ logger = create_logger(__name__)
 class HttpGateway:
     @staticmethod
     def _parse_error(content):
-        if content is None:
-            logger.warning('Failed to retreive xml from Alma API')
+        if content == '':
+            logger.warning('Failed to retrieve xml from Alma API')
             return
 
         soup = BeautifulSoup(content, features='xml')
@@ -28,7 +28,7 @@ class HttpGateway:
                 error_code = error.find('errorCode').text
                 error_message = error.find('errorMessage').text
             except AttributeError:
-                logger.warning('Failed to retrieve error code and message in content')
+                logger.warning('Failed to retrieve error code and/or message in content')
                 return
 
             logger.warning(f'Alma API error {error_code}: {error_message}')
@@ -43,7 +43,9 @@ class HttpGateway:
 
         if r.status_code == 400:
             logger.warning(f"Received {r.status_code} from '{url}' in {request_response_time}")
-            HttpGateway._parse_error(r.content)
+
+            error_content = r.content.decode('UTF-8') if r.content else ''
+            HttpGateway._parse_error(error_content)
             abort(r.status_code, 'Received 400 from the Alma API')
 
         if r.status_code == 500:
