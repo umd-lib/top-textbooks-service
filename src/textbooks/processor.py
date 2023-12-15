@@ -52,15 +52,15 @@ class TopTextbooksProcessor:
                 continue
 
             if availability == 'available':
-                logger.info(f'{total_items} available textbooks for {mms_id}')
+                logger.debug(f'{total_items} available textbooks for {mms_id}')
                 response_data[mms_id] = {'count': total_items, 'status': availability}
 
             elif availability == 'unavailable':
-                logger.info(f'No available textbooks for {mms_id}')
+                logger.debug(f'No available textbooks for {mms_id}')
                 response_data[mms_id] = {'count': 0, 'status': availability}
 
             else:
-                logger.info(f'Availability status of {availability} for {mms_id}')
+                logger.debug(f'Availability status of {availability} for {mms_id}')
                 response_data[mms_id] = {'status': 'Check Holding'}
 
         return response_data
