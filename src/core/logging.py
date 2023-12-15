@@ -1,4 +1,5 @@
 import logging
+import sys
 from os import environ
 
 from pythonjsonlogger import jsonlogger
@@ -86,7 +87,11 @@ def create_logger(name):
     if log_redacting_filter:
         logHandler.addFilter(log_redacting_filter)
 
-    if not debug:
+    # When running tests, do not want to use the JSON logger
+    is_pytest_running = ("pytest" in sys.modules)
+
+    use_json_logger = not (debug or is_pytest_running)
+    if use_json_logger:
         logHandler.setFormatter(json_formatter)
         logger.setLevel(logging.INFO)
 
