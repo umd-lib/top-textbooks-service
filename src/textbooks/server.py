@@ -32,7 +32,6 @@ def run(listen, alma_config_file):
         raise RuntimeError('ALMA_API_KEY not set in environment')
 
     server_identity = f'top-textbooks-service/{__version__}'
-    logger.info(f'Starting {server_identity}')
     try:
         serve(
             app=app(config=alma_config_file),
