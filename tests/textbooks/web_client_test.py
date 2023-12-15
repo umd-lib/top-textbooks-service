@@ -1,11 +1,8 @@
 import json
 
 import pytest
-from core.exceptions import (
-    BadGatewayError,
-    GatewayTimeoutError,
-    TooManyRequestsError,
-)
+from core.exceptions import BadGatewayError, GatewayTimeoutError, TooManyRequestsError
+from textbooks.processor import AlmaServerGateway
 from textbooks.web import _create_app
 
 
@@ -47,7 +44,7 @@ def raise_(ex):
     raise ex
 
 
-class MockAlmaServerGateway:
+class MockAlmaServerGateway(AlmaServerGateway):
     def __init__(self, responseFunction):
         self.responseFunction = responseFunction
 
