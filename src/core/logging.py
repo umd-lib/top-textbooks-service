@@ -1,11 +1,13 @@
 import logging
 import sys
+from datetime import datetime
 from os import environ
+from typing import Any, Dict
 
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger.jsonlogger import JsonFormatter, merge_record_extra
 
 
-class CustomJsonFormatter(jsonlogger.JsonFormatter):
+class CustomJsonFormatter(JsonFormatter):
     """
     As long as https://github.com/madzak/python-json-logger/issues/171 is still open,
     we need to have our own JsonFormatter implementation that fixes the bug.
@@ -17,6 +19,23 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
                 continue
             log_record[new_field_name] = log_record[old_field_name]
             del log_record[old_field_name]
+
+    def add_fields(self, log_record: Dict[str, Any], record: logging.LogRecord, message_dict: Dict[str, Any]) -> None:
+        """
+        Override this method to implement custom logic for adding fields.
+        """
+        for field in self._required_fields:
+            log_record[field] = record.__dict__.get(field)
+
+        log_record.update(self.static_fields)
+        log_record.update(message_dict)
+        merge_record_extra(record, log_record, reserved=self._skip_fields, rename_fields=self.rename_fields)
+
+        if self.timestamp:
+            key = self.timestamp if type(self.timestamp) is str else 'timestamp'
+            log_record[key] = datetime.fromtimestamp(record.created, tz=datetime.now().astimezone().tzinfo)
+
+        self._perform_rename_log_fields(log_record)
 
 
 class RedactingFilter(logging.Filter):
