@@ -17,9 +17,9 @@ def test_unique_mms_ids():
 
 def test_retrieve_bibs_item_available(requests_mock):
     xml_response = resource_file_as_string('tests/resources/retrieve_bibs_200_response_available.xml')
-    requests_mock.get('http://test.com/test_endpoint', text=xml_response, status_code=200)
+    requests_mock.get('http://example.com/test_endpoint', text=xml_response, status_code=200)
 
-    mock_config = {'host': 'http://test.com', 'endpoint': '/test_endpoint'}
+    mock_config = {'host': 'http://example.com', 'endpoint': '/test_endpoint'}
     processor = TopTextbooksProcessor(AlmaServerGateway(mock_config))
 
     mock_request = ["990008536900108238"]
