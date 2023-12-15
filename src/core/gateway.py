@@ -12,8 +12,8 @@ logger = create_logger(__name__)
 class HttpGateway:
     @staticmethod
     def _parse_error(content):
-        if content is None:
-            logger.warning('Failed to retreive xml from Alma API')
+        if content == '':
+            logger.warning('Failed to retrieve xml from Alma API')
             return
 
         soup = BeautifulSoup(content, features='xml')
@@ -28,32 +28,40 @@ class HttpGateway:
                 error_code = error.find('errorCode').text
                 error_message = error.find('errorMessage').text
             except AttributeError:
-                logger.warning('Failed to retrieve error code and message in content')
+                logger.warning('Failed to retrieve error code and/or message in content')
                 return
 
             logger.warning(f'Alma API error {error_code}: {error_message}')
 
     @staticmethod
+    def log_response(level: str, url, response, request_response_time):
+        log = getattr(logger, level)
+        log(
+            f"Received {response.status_code} from '{url}'",
+            extra={'http_status_code': response.status_code, 'request_response_time_in_secs': request_response_time}
+        )
+
+    @ staticmethod
     def get(url, params):
         logger.debug(f'{url=}, {params=}')
 
         request_start_time = perf_counter()
         r = requests.get(url, params=params)
-        request_response_time = f"{(perf_counter() - request_start_time):.4f} seconds"
+        request_response_time = (perf_counter() - request_start_time)
 
         if r.status_code == 400:
-            logger.warning(f"Received {r.status_code} from '{url}' in {request_response_time}")
-            HttpGateway._parse_error(r.content)
+            HttpGateway.log_response('warning', url, r, request_response_time)
+            error_content = r.content.decode('UTF-8') if r.content else ''
+            HttpGateway._parse_error(error_content)
             abort(r.status_code, 'Received 400 from the Alma API')
 
         if r.status_code == 500:
-            logger.warning(f"Received {r.status_code} from '{url}' in {request_response_time}")
+            HttpGateway.log_response('warning', url, r, request_response_time)
             abort(r.status_code, 'Received 500 from the Alma API')
 
         if not r.ok:
-            logger.warning(f"Received unexpected {r.status_code} from '{url}' in {request_response_time}")
+            HttpGateway.log_response('warning', url, r, request_response_time)
             abort(r.status_code, r.reason)
 
-        logger.info(f"Received {r.status_code} from '{url}' in {request_response_time}")
-
+        HttpGateway.log_response('info', url, r, request_response_time)
         return r.content
