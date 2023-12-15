@@ -1,4 +1,4 @@
-from typing import Any, Optional, Text, TextIO
+from typing import Any, Optional, TextIO
 
 from core.logging import create_logger
 from core.web_errors import blueprint
@@ -11,9 +11,9 @@ from textbooks.processor import AlmaServerGateway, TopTextbooksProcessor
 logger = create_logger(__name__)
 
 
-def get_config(config_source: Optional[str | TextIO] = None) -> dict[str, Any]:
+def get_config(config_source: Optional[str | TextIO] = None) -> Optional[dict[str, Any]]:
     if config_source is None:
-        raise RuntimeError('Config file not provided')
+        return None
 
     if isinstance(config_source, str):
         with open(config_source) as fh:
@@ -28,7 +28,7 @@ def app(config: Optional[str | TextIO] = None) -> Flask:
     return _create_app(server)
 
 
-def _create_app(server) -> Flask:
+def _create_app(server: Optional[AlmaServerGateway] = None) -> Flask:
     _app = Flask(
         import_name=__name__,
     )
@@ -37,14 +37,12 @@ def _create_app(server) -> Flask:
 
     @_app.route('/')
     def root():
-        return f"""
-        <h1>Service for Top Textbooks</h1>
-        <h2>Version: top-textbooks-service/{__version__}</h2>
-        <h3>Endpoints</h3>
-        <ul>
-            <li>/textbooks</li>
-        </ul>
-        """
+        return {'status': 'ok'}
+
+
+    @_app.route('/ping')
+    def ping():
+        return {'status': 'ok'}
 
     @_app.route('/api/textbooks', methods=['GET', 'POST'])  # type: ignore
     def textbooks():
