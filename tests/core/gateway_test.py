@@ -101,7 +101,7 @@ def test_404_response_from_server(requests_mock, caplog):
     with pytest.raises(NotFound):
         HttpGateway.get('http://example.com', {})
 
-    assert 'Received unexpected 404' in caplog.text
+    assert 'Received 404' in caplog.text
 
 
 def test_429_response_from_server(requests_mock, caplog):
@@ -109,7 +109,7 @@ def test_429_response_from_server(requests_mock, caplog):
     with pytest.raises(TooManyRequests):
         HttpGateway.get('http://example.com', {})
 
-    assert 'Received unexpected 429' in caplog.text
+    assert 'Received 429' in caplog.text
 
 
 def test_500_response_from_server(requests_mock, caplog):
@@ -125,7 +125,7 @@ def test_502_response_from_server(requests_mock, caplog):
     with pytest.raises(BadGateway):
         HttpGateway.get('http://example.com', {})
 
-    assert 'Received unexpected 502' in caplog.text
+    assert 'Received 502' in caplog.text
 
 
 def test_504_response_from_server(requests_mock, caplog):
@@ -133,4 +133,4 @@ def test_504_response_from_server(requests_mock, caplog):
     with pytest.raises(GatewayTimeout):
         HttpGateway.get('http://example.com', {})
 
-    assert 'Received unexpected 504' in caplog.text
+    assert 'Received 504' in caplog.text
