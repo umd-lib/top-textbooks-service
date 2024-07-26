@@ -1,6 +1,6 @@
 import os
 
-from textbooks.processor import AlmaServerGateway, TopTextbooksProcessor
+from alma.processor import AlmaServerGateway, AlmaProcessor
 
 
 def resource_file_as_string(filepath):
@@ -10,7 +10,7 @@ def resource_file_as_string(filepath):
 
 def test_unique_mms_ids():
     data = {'abc', '123', 'abc'}
-    unique_data = TopTextbooksProcessor(server=None).unique_mms_ids(data)
+    unique_data = AlmaProcessor(server=None).unique_mms_ids(data)
     assert isinstance(unique_data, set)
     assert unique_data == {'abc', '123'}
 
@@ -20,10 +20,13 @@ def test_retrieve_bibs_item_available(requests_mock):
     requests_mock.get('http://example.com/test_endpoint', text=xml_response, status_code=200)
 
     mock_config = {'host': 'http://example.com', 'endpoint': '/test_endpoint'}
-    processor = TopTextbooksProcessor(AlmaServerGateway(mock_config))
+    processor = AlmaProcessor(AlmaServerGateway(mock_config))
 
     mock_request = ["990008536900108238"]
-    expected_result = {'990008536900108238': {'count': '1', 'status': 'available'}}
+    expected_result = {'990008536900108238--CPMCK': {'location': 'CPMCK', 'count': '1', 'status': 'available',
+                                                     'call_number': 'CLAS170/Iliad of Homer',
+                                                     'title': 'The Iliad of Homer /', 'mms_id': '990008536900108238'}}
 
-    processed_result = processor.process(mock_request)
+    processed_result = processor.processBibs(mock_request, 'TPTXB')
+
     assert processed_result == expected_result

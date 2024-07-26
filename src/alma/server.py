@@ -6,8 +6,8 @@ from core.logging import create_logger
 from dotenv import load_dotenv
 from waitress import serve
 
-from textbooks import __version__
-from textbooks.web import app
+from alma import __version__
+from alma.web import app
 
 logger = create_logger(__name__)
 
@@ -31,7 +31,7 @@ def run(listen, alma_config_file):
     if 'ALMA_API_KEY' not in environ:
         raise RuntimeError('ALMA_API_KEY not set in environment')
 
-    server_identity = f'top-textbooks-service/{__version__}'
+    server_identity = f'alma-service/{__version__}'
     try:
         serve(
             app=app(config=alma_config_file),

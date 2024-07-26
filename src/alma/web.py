@@ -5,8 +5,8 @@ from core.web_errors import blueprint
 from flask import Flask, abort, request
 from yaml import safe_load
 
-from textbooks import __version__
-from textbooks.processor import AlmaServerGateway, TopTextbooksProcessor
+from alma import __version__
+from alma.processor import AlmaServerGateway, AlmaProcessor
 
 logger = create_logger(__name__)
 
@@ -33,7 +33,7 @@ def _create_app(server: Optional[AlmaServerGateway] = None) -> Flask:
         import_name=__name__,
     )
     _app.register_blueprint(blueprint)
-    logger.info(f'Starting top-textbooks-service/{__version__}')
+    logger.info(f'Starting alma-service/{__version__}')
 
     @_app.route('/')
     def root():
@@ -44,14 +44,37 @@ def _create_app(server: Optional[AlmaServerGateway] = None) -> Flask:
         return {'status': 'ok'}
 
     @_app.route('/api/textbooks', methods=['GET', 'POST'])  # type: ignore
-    def textbooks():
+    def bibs():
         if not request.is_json:
             abort(400, 'Request was not JSON')
 
         requestData = request.get_json()
         logger.info(f'{requestData=}')
-        processor = TopTextbooksProcessor(server)
-        responseData = processor.process(requestData)
+        processor = AlmaProcessor(server)
+        responseData = processor.processBibs(requestData, 'TPTXB')
+        return responseData
+
+    @_app.route('/api/holdings', methods=['GET', 'POST'])  # type: ignore
+    def holdings():
+        if not request.is_json:
+            abort(400, 'Request was not JSON')
+
+        requestData = request.get_json()
+        logger.info(f'{requestData=}')
+        processor = AlmaProcessor(server)
+        responseData = processor.processHoldings(requestData)
+        return responseData
+
+    @_app.route('/api/equipment', methods=['GET', 'POST'])  # type: ignore
+    def equipment():
+        if not request.is_json:
+            abort(400, 'Request was not JSON')
+
+        requestData = request.get_json()
+        logger.info(f'{requestData=}')
+        processor = AlmaProcessor(server)
+        responseData = processor.processBibs(requestData, limit_collection=None,
+                                             include_course=False, check_holdings=True)
         return responseData
 
     return _app

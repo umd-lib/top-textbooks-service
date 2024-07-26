@@ -1,5 +1,5 @@
 [project]
-name = "top-textbooks-service"
+name = "alma-service"
 version = "0.0.1"
 dependencies = [
     "beautifulsoup4",
@@ -23,7 +23,7 @@ test = [
     "pycodestyle"
 ]
 [project.scripts]
-top-textbooks-service = "textbooks.server:run"
+alma-service = "alma.server:run"
 
 [tool.ruff]
 line-length = 120

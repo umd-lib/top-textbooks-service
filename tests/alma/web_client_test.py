@@ -2,8 +2,8 @@ import json
 
 import pytest
 from core.exceptions import BadGatewayError, GatewayTimeoutError, TooManyRequestsError
-from textbooks.processor import AlmaServerGateway
-from textbooks.web import _create_app
+from alma.processor import AlmaServerGateway
+from alma.web import _create_app
 
 
 @pytest.fixture

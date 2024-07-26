@@ -2,10 +2,10 @@ FROM python:3.12-slim
 
 EXPOSE 5000
 
-WORKDIR /opt/top-textbooks-service
+WORKDIR /opt/alma-service
 
-COPY . /opt/top-textbooks-service/
+COPY . /opt/alma-service/
 
 RUN pip install -r requirements.txt -e .
 
-ENTRYPOINT ["top-textbooks-service"]
+ENTRYPOINT ["alma-service"]

@@ -1,10 +1,10 @@
-# top-textbook-service
+# alma-service
 
-Top-Textbook Service for Drupal
+Alma Service for Drupal
 
 ## Purpose
 
-This is a flask microservice for handling textbook availability in Drupal. It
+This is a flask microservice for handling alma queries in Drupal. It
 will make requests to the Alma API to retrieve metadata.
 
 ## Development Environment
@@ -14,10 +14,10 @@ Python version: 3.12
 ### Installation
 
 ```zsh
-git clone git@github.com:umd-lib/top-textbooks-service.git
-cd top-textbooks-service
+git clone git@github.com:umd-lib/alma-service.git
+cd alma-service
 pyenv install --skip-existing $(cat .python-version)
-python -m venv .venv --prompt textbooks
+python -m venv .venv --prompt alma
 source .venv/bin/activate
 pip install -r requirements.test.txt -e .
 ```
@@ -47,7 +47,7 @@ and make the following changes:
 To run the application in debug mode, with hot code reloading:
 
 ```zsh
-flask --app "textbooks.web:app(config='alma_config.yaml')" run
+flask --app "alma.web:app(config='alma_config.yaml')" run
 ```
 
 The microservice will be available at <http://localhost:5000/>,
@@ -57,7 +57,15 @@ To change the port, add `-p {port number}` to the `flask` command:
 
 ```zsh
 # for example, to run on port 8000
-flask --app "textbooks.web:app(config='alma_config.yaml')" run -p 8000
+flask --app "alma.web:app(config='alma_config.yaml')" run -p 8000
+```
+
+Command line queries can then be run for testing like so:
+
+```zsh
+curl --header "Content-Type: application/json" --request POST --data '["990036902950108238", "990062905500108238", "990060785130108238", "990062906000108238"]' http://127.0.0.1:5000/api/textbooks
+
+curl --header "Content-Type: application/json" --request POST --data '{"990036902950108238": "22226889550008238"}' http://127.0.0.1:5000/api/textbooks
 ```
 
 ### Testing
@@ -104,7 +112,7 @@ Upon opening this codebase in VSCode:
 Build the image:
 
 ```zsh
-docker build -t docker.lib.umd.edu/top-textbooks-service:latest .
+docker build -t docker.lib.umd.edu/alma-service:latest .
 ```
 
 If you need to build for multiple architectures (e.g., AMD and ARM), you
@@ -113,18 +121,17 @@ configured for use with your docker buildx system, and you are logged in
 to a Docker repository that you can push images to:
 
 ```zsh
-docker buildx build --builder local --platform linux/amd64,linux/arm64 \
-    -t docker.lib.umd.edu/top-textbooks-service:latest --push .
+docker buildx build --builder local --platform linux/amd64,linux/arm64 -t docker.lib.umd.edu/alma-service:latest --push .
 
 # then pull the image so it is available locally
-docker pull docker.lib.umd.edu/top-textbooks-service:latest
+docker pull docker.lib.umd.edu/alma-service:latest
 ```
 
 Run the container:
 
 ```zsh
 export ALMA_API_KEY=<Alma API Key>
-docker run --publish 5000:5000 --env ALMA_API_KEY=$ALMA_API_KEY docker.lib.umd.edu/top-textbooks-service:latest --alma_config=alma_config.yaml
+docker run --publish 5000:5000 --env ALMA_API_KEY=$ALMA_API_KEY docker.lib.umd.edu/alma-service:latest --alma_config=alma_config.yaml
 ```
 
 If you created a `.env` file (see [Configuration](#configuration)), you
@@ -133,7 +140,7 @@ can run the Docker image using that file.
 ```zsh
 docker run -p 5000:5000 \
     --env-file .env \
-    docker.lib.umd.edu/top-textbooks-service:latest --alma_config=alma_config.yaml
+    docker.lib.umd.edu/alma-service:latest --alma_config=alma_config.yaml
 ```
 
 [pytest]: https://docs.pytest.org/en/7.3.x/
