@@ -121,7 +121,7 @@ configured for use with your docker buildx system, and you are logged in
 to a Docker repository that you can push images to:
 
 ```zsh
-docker buildx build --builder local --platform linux/amd64,linux/arm64 -t docker.lib.umd.edu/alma-service:latest --push .
+docker buildx build . --builder=kube -t docker.lib.umd.edu/alma-service:latest --push
 
 # then pull the image so it is available locally
 docker pull docker.lib.umd.edu/alma-service:latest

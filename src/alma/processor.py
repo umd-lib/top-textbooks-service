@@ -32,6 +32,11 @@ class AlmaProcessor:
         return dict(data)
 
     def parse_holdings(self, content, check_TT=True):
+        """
+        Parse holdings/items of a given mms + holdings ID.
+        One query per record though a single result can include multiple items.
+        Defaults to Top Textbooks only query (check_TT).
+        """
         response_data = {}
         soup = BeautifulSoup(content, features='xml')
         bibs = soup.find_all('item')
@@ -44,16 +49,25 @@ class AlmaProcessor:
                 bib_data = bib.find('bib_data')
                 holding_data = bib.find('holding_data')
                 item_data = bib.find('item_data')
+                logger.debug(item_data)
             except AttributeError:
                 abort(502, 'fields not found in bibs')
 
             is_TT = False
+            temp_locations = None
             if check_TT:
                 try:
                     temp_locations = holding_data.find_all('temp_location', attrs={'desc': 'Top Textbook'})
                 except AttributeError:
                     is_TT = False
 
+                if temp_locations is None or len(temp_locations) == 0:
+                    try:
+                        temp_locations = item_data.find_all('location', attrs={'desc': 'Top Textbook'})
+                    except AttributeError:
+                        is_TT = False
+
+                logger.debug(temp_locations)
                 for loc in temp_locations:
                     if loc.text == 'TPTXB':
                         is_TT = True
@@ -72,21 +86,21 @@ class AlmaProcessor:
                         item_available = True
                 except AttributeError:
                     item_available = False
-                # item_not_in_place = item_data.find('base_status', attrs={'desc': 'Item not in place'})
 
-                response_data[barcode] = {'available': item_available, 'count': item_count}
+                response_data[barcode] = {'available': item_available, 'count': item_count,
+                                          'reshelving': awaiting_reshelving}
 
         return response_data
 
-    def parse_xml(self, content, limit_collection, include_course, check_holdings):
+    def parse_bibs(self, content, limit_collection, include_course, check_holdings):
         """
-        Parses the xml content from the Alma API.
-        Retrieves the availability and amount of available books.
+        Parses the bibliographic xml content from the Alma API.
+        Many records are processed in a single query.
+        Retrieves the availability and amount. Can be limited by collection.
+        An additional holdings check can be run if item is unavailable.
         """
-        # logger.debug(content)
         response_data = {}
         soup = BeautifulSoup(content, features='xml')
-        # avas = soup.find_all('datafield', attrs={'tag': 'AVA'})
 
         bibs = soup.find_all('bib')
 
@@ -99,14 +113,14 @@ class AlmaProcessor:
             except AttributeError:
                 abort(502, 'fields not found in bibs')
 
-            # logger.debug(holdings_url)
-            # holdings_info = self.getAdditional(holdings_url)
+            logger.debug(holdings_url)
+            holdings_info = self.getAdditional(holdings_url)
             # logger.debug(holdings_info)
-            # holdings_soup = BeautifulSoup(holdings_info, features='xml')
-            # info_url = holdings_soup.find('holding')['link']
-            # logger.debug(info_url)
-            # info = self.getAdditional(info_url + '/items')
-            # logger.debug(info)
+            holdings_soup = BeautifulSoup(holdings_info, features='xml')
+            info_url = holdings_soup.find('holding')['link']
+            logger.debug(info_url)
+            info = self.getAdditional(info_url + '/items')
+            logger.debug(info)
 
             if len(avas) == 0:
                 abort(502, 'No AVA tag found in content')
@@ -136,8 +150,6 @@ class AlmaProcessor:
 
                 if limit_collection is not None and limit_collection != location_code:
                     continue
-
-                logger.debug(ava)
 
                 course_code = None
                 if include_course and call_number is not None:
@@ -250,7 +262,7 @@ class AlmaProcessor:
         query_content = self.queryServer(mms_ids)
 
         # Process the xml content
-        alma_data = self.parse_xml(query_content, limit_collection, include_course, check_holdings)
+        alma_data = self.parse_bibs(query_content, limit_collection, include_course, check_holdings)
 
         for mms_id in alma_data:
             if mms_id not in alma_data:
@@ -261,21 +273,21 @@ class AlmaProcessor:
     def queryServer(self, mms_ids):
         """
         Generates parameters neceessary to query Alma Server.
-        Request content is xml, processed in :meth:`parse_xml`
+        Request content is xml, processed in :meth:`parse_bibs`
         """
         return self.server.retrieveBibs(mms_ids)
 
     def getHoldings(self, mms_id, holdings_id):
         """
         Generates parameters neceessary to query Alma Server.
-        Request content is xml, processed in :meth:`parse_xml`
+        Request content is xml, processed in :meth:`parse_holdings`
         """
         return self.server.retrieveHoldings(mms_id, holdings_id)
 
     def getAdditional(self, url):
         """
-        Generates parameters neceessary to query Alma Server.
-        Request content is xml, processed in :meth:`parse_xml`
+        Allows for querying of alma provided URL without additional
+        parameters needed. Used in :meth:`parse_bibs`
         """
         return self.server.retrieveAdditional(url)
 

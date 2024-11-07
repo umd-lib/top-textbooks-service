@@ -8,4 +8,4 @@ COPY . /opt/alma-service/
 
 RUN pip install -r requirements.txt -e .
 
-ENTRYPOINT ["alma-service"]
+ENTRYPOINT ["alma-service", "--alma_config", "alma_config.yaml"]
