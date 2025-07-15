@@ -39,11 +39,11 @@ def _create_app(server: Optional[AlmaServerGateway] = None) -> Flask:
     def root():
         return {'status': 'ok'}
 
-    @_app.route('/api/ping')
+    @_app.route('/alma-service/ping')
     def ping():
         return {'status': 'ok'}
 
-    @_app.route('/api/textbooks', methods=['GET', 'POST'])  # type: ignore
+    @_app.route('/alma-service/textbooks', methods=['GET', 'POST'])  # type: ignore
     def bibs():
         if not request.is_json:
             abort(400, 'Request was not JSON')
@@ -54,7 +54,7 @@ def _create_app(server: Optional[AlmaServerGateway] = None) -> Flask:
         responseData = processor.processBibs(requestData, 'TPTXB')
         return responseData
 
-    @_app.route('/api/holdings', methods=['GET', 'POST'])  # type: ignore
+    @_app.route('/alma-service/holdings', methods=['GET', 'POST'])  # type: ignore
     def holdings():
         if not request.is_json:
             abort(400, 'Request was not JSON')
@@ -65,7 +65,7 @@ def _create_app(server: Optional[AlmaServerGateway] = None) -> Flask:
         responseData = processor.processHoldings(requestData)
         return responseData
 
-    @_app.route('/api/equipment', methods=['GET', 'POST'])  # type: ignore
+    @_app.route('/alma-service/equipment', methods=['GET', 'POST'])  # type: ignore
     def equipment():
         if not request.is_json:
             abort(400, 'Request was not JSON')
