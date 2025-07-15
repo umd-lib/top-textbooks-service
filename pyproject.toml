@@ -1,0 +1,41 @@
+[project]
+name = "alma-service"
+version = "1.0.0"
+dependencies = [
+    "beautifulsoup4",
+    "flask",
+    "jsonschema",
+    "lxml",
+    "python-dotenv",
+    "python-json-logger",
+    "PyYAML",
+    "requests",
+    "waitress",
+]
+[project.optional-dependencies]
+test = [
+    "debugpy",
+    "pipdeptree",
+    "pytest",
+    "pytest-cov",
+    "requests-mock",
+    "ruff",
+    "pycodestyle"
+]
+[project.scripts]
+alma-service = "alma.server:run"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint]
+# preview is required to enable many pycodestyle rules see
+# https://docs.astral.sh/ruff/rules/
+preview = true
+
+# Enable pycodestyle errors and warnings
+select = ["E", "W"]
+
