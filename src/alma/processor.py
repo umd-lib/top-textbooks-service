@@ -111,7 +111,9 @@ class AlmaProcessor:
                 holdings_url = bib.find('holdings')['link']
                 title = bib.find('title').text
             except AttributeError:
-                abort(502, 'fields not found in bibs')
+                logger.warning('No AVA found for content ')
+                # abort(502, 'fields not found in bibs')
+                continue
 
             logger.debug(holdings_url)
             holdings_info = self.getAdditional(holdings_url)
@@ -120,26 +122,38 @@ class AlmaProcessor:
             info_url = holdings_soup.find('holding')['link']
             logger.debug(info_url)
             info = self.getAdditional(info_url + '/items')
-            logger.debug(info)
+            # logger.debug(info)
 
             if len(avas) == 0:
-                abort(502, 'No AVA tag found in content')
+                logger.warning('No AVA found for content ')
+                # abort(502, 'No AVA tag found in content')
+                continue
 
+            logger.debug(avas)
             for ava in avas:
                 availability = None
                 total_items = None
                 location_code = None
                 call_number = None
                 physical_location = None
-                try:
-                    mms_id = ava.find('subfield', attrs={'code': '0'}).text
-                    availability = ava.find('subfield', attrs={'code': 'e'}).text
-                    total_items = ava.find('subfield', attrs={'code': 'f'}).text
-                    location_code = ava.find('subfield', attrs={'code': 'j'}).text
-                    call_number = ava.find('subfield', attrs={'code': 'd'}).text
-                    physical_location = ava.find('subfield', attrs={'code': 'b'}).text
-                except AttributeError:
-                    abort(502, 'Subfields not found in AVA')
+                mms_find = ava.find('subfield', attrs={'code': '0'})
+                if mms_find is not None:
+                    mms_id = mms_find.text
+                avail_find = ava.find('subfield', attrs={'code': 'e'})
+                if avail_find is not None:
+                    availability = avail_find.text
+                total_find = ava.find('subfield', attrs={'code': 'f'})
+                if total_find is not None:
+                    total_items = total_find.text
+                location_find = ava.find('subfield', attrs={'code': 'j'})
+                if location_find is not None:
+                    location_code = location_find.text
+                call_find = ava.find('subfield', attrs={'code': 'd'})
+                if call_find is not None:
+                    call_number = call_find.text
+                physical_find = ava.find('subfield', attrs={'code': 'b'})
+                if physical_find is not None:
+                    physical_location = physical_find.text
 
                 logger.debug(f'{mms_id=}')
                 logger.debug(f'{availability=}')
@@ -196,6 +210,7 @@ class AlmaProcessor:
                             logger.debug(info_url)
                             info = self.getAdditional(info_url + '/items')
                             info_soup = BeautifulSoup(info, features='xml')
+                            logger.debug(info_soup)
                             due_dates = info_soup.find_all('due_date')
                             for date in due_dates:
                                 logger.debug(date)
