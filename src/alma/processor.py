@@ -133,6 +133,7 @@ class AlmaProcessor:
             for ava in avas:
                 availability = None
                 total_items = None
+                checked_out = None
                 location_code = None
                 call_number = None
                 physical_location = None
@@ -145,6 +146,9 @@ class AlmaProcessor:
                 total_find = ava.find('subfield', attrs={'code': 'f'})
                 if total_find is not None:
                     total_items = total_find.text
+                checked_find = ava.find('subfield', attrs={'code': 'g'})
+                if checked_find is not None:
+                    checked_out = checked_find.text
                 location_find = ava.find('subfield', attrs={'code': 'j'})
                 if location_find is not None:
                     location_code = location_find.text
@@ -158,6 +162,7 @@ class AlmaProcessor:
                 logger.debug(f'{mms_id=}')
                 logger.debug(f'{availability=}')
                 logger.debug(f'{total_items=}')
+                logger.debug(f'{checked_out=}')
                 logger.debug(f'{location_code=}')
                 logger.debug(f'{call_number=}')
                 logger.debug(f'{physical_location=}')
@@ -182,25 +187,37 @@ class AlmaProcessor:
 
                 key_exists = False
                 if item_key in response_data:
-                    if 'count' in response_data[item_key] and int(total_items) > 0:
+                    if 'total' in response_data[item_key] and int(total_items) > 0:
                         modified_dict = response_data[item_key]
-                        old_count = modified_dict['count']
-                        new_count = int(total_items) + int(old_count)
-                        modified_dict['count'] = new_count
+                        old_total = modified_dict['total']
+                        new_total = int(total_items) + int(old_total)
+                        modified_dict['total'] = new_total
+                        new_checked = 0
+                        if 'checked_out' in modified_dict and int(checked_out) > 0:
+                            old_checked = modified_dict['checked_out']
+                            new_checked = int(old_checked) + int(checked_out)
+                            modified_dict['checked_out'] = new_checked
+                        count = new_total - new_checked
+                        modified_dict['count'] = count
                         response_data[item_key] = modified_dict
                         key_exists = True
 
                 if not key_exists:
                     if availability == 'available':
+                        count = int(total_items) - int(checked_out)
                         logger.debug(f'{total_items} available textbooks for {mms_id}')
                         response_data[item_key] = {'location': physical_location,
-                                                   'count': total_items, 'status': availability,
+                                                   'total': total_items,
+                                                   'checked_out': checked_out,
+                                                   'count': count,
+                                                   'status': availability,
                                                    'call_number': call_number}
 
                     elif availability == 'unavailable':
                         logger.debug(f'No available textbooks for {mms_id}')
-                        response_data[item_key] = {'location': physical_location,
-                                                   'count': 0, 'status': availability, 'call_number': call_number}
+                        response_data[item_key] = {'location': physical_location, 'total': total_items,
+                                                   'checked_out': checked_out, 'count': 0,
+                                                   'status': availability, 'call_number': call_number}
                         if check_holdings:
                             stored_date = None
                             logger.debug(holdings_url)
